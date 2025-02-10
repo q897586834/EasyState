@@ -5,7 +5,7 @@
   "main": "dist/store.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:q897586834/EasyState.git"
+    "url": "git@github.com:q897586834/EasyStore.git"
   },
   "scripts": {
     "build": "tsc",
