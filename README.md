@@ -67,6 +67,153 @@ store.setStateSync((state) => ({
 3. 可以自定义存储方式吗？
 目前 EasyStore 支持 localStorage 和 sessionStorage，如果你需要自定义存储方式，可以修改源码或扩展 EasyStore 类来支持。
 
+## 在React Hooks中使用
+
+```bash
+import React, { useEffect, useState } from 'react';
+import EasyStore from '@sakura_fty/easystore';
+
+// 定义状态的结构
+interface State {
+  count: number;
+  message: string;
+}
+
+// 初始化 store，设置初始状态
+const store = new EasyStore<State>({
+  initialState: { count: 0, message: '' },
+  storageKey: 'counterState',  // 可选：使用 localStorage 持久化状态
+  storageType: 'localStorage',  // 可选：选择存储类型，可以是 'localStorage' 或 'sessionStorage'
+});
+
+const Counter: React.FC = () => {
+  const [state, setState] = useState(store.getState());
+
+  // 订阅状态变化
+  useEffect(() => {
+    const unsubscribe = store.subscribe((newState) => {
+      setState(newState);  // 当状态变化时更新组件的 state
+    });
+
+    // 组件卸载时取消订阅
+    return () => unsubscribe();
+  }, []);
+
+  // 同步更新状态
+  const increment = () => {
+    store.setStateSync((state) => ({ count: state.count + 1 }));
+  };
+
+  const decrement = () => {
+    store.setStateSync((state) => ({ count: state.count - 1 }));
+  };
+
+  // 异步更新状态，模拟多个异步操作
+  const incrementAsync = async () => {
+    // 创建两个 Promise 模拟异步操作
+    const asyncData1 = new Promise<{ count: number }>((resolve) =>
+      setTimeout(() => resolve({ count: state.count + 10 }), 1000)
+    );
+    const asyncData2 = new Promise<{ message: string }>((resolve) =>
+      setTimeout(() => resolve({ message: 'Hello from Async!' }), 1500)
+    );
+
+    // 使用 setStateAsync 同时处理多个异步操作
+    await store.setStateAsync([asyncData1, asyncData2]);
+
+    // 以上 setStateAsync 会等两个 Promise 都完成后才会更新状态
+  };
+
+  return (
+    <div>
+      <h1>Counter: {state.count}</h1>
+      <p>Message: {state.message}</p>
+      <button onClick={increment}>Increment</button>
+      <button onClick={decrement}>Decrement</button>
+      <button onClick={incrementAsync}>Increment Async (+10) and Set Message</button>
+    </div>
+  );
+};
+
+export default Counter;
+
+```
+
+## 在Vue3中使用
+```bash
+<template>
+  <div>
+    <h1>Counter: {{ state.count }}</h1>
+    <p>Message: {{ state.message }}</p>
+    <button @click="increment">Increment</button>
+    <button @click="decrement">Decrement</button>
+    <button @click="incrementAsync">Increment Async (+10) and Set Message</button>
+  </div>
+</template>
+
+<script>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import EasyStore from '@sakura_fty/easystore';
+
+// 创建一个 EasyStore 实例，初始化状态
+const store = new EasyStore({
+  initialState: { count: 0, message: '' },
+  storageKey: 'counterState',  // 可选：使用 localStorage 持久化状态
+  storageType: 'localStorage',  // 可选：选择存储类型，可以是 'localStorage' 或 'sessionStorage'
+});
+
+export default {
+  name: 'Counter',
+  setup() {
+    // 使用 ref 来保持响应式的状态
+    const state = ref(store.getState());
+
+    // 在组件挂载时订阅状态变化
+    const unsubscribe = store.subscribe((newState) => {
+      state.value = newState;
+    });
+
+    // 在组件销毁时取消订阅
+    onBeforeUnmount(() => {
+      unsubscribe();
+    });
+
+    // 同步更新状态
+    const increment = () => {
+      store.setStateSync((state) => ({ count: state.count + 1 }));
+    };
+
+    const decrement = () => {
+      store.setStateSync((state) => ({ count: state.count - 1 }));
+    };
+
+    // 异步更新状态，模拟多个异步操作
+    const incrementAsync = async () => {
+      // 创建两个 Promise 模拟异步操作
+      const asyncData1 = new Promise((resolve) =>
+        setTimeout(() => resolve({ count: state.value.count + 10 }), 1000)
+      );
+      const asyncData2 = new Promise((resolve) =>
+        setTimeout(() => resolve({ message: 'Hello from Async!' }), 1500)
+      );
+
+      // 使用 setStateAsync 同时处理多个异步操作
+      await store.setStateAsync([asyncData1, asyncData2]);
+
+      // 以上 setStateAsync 会等两个 Promise 都完成后才会更新状态
+    };
+
+    return {
+      state,
+      increment,
+      decrement,
+      incrementAsync,
+    };
+  },
+};
+</script>
+```
+
 ## 贡献
 
 欢迎任何人对 EasyStore 做出贡献！如果你有建议或 bug 报告，请提交一个 issue，或者创建一个 pull request。
