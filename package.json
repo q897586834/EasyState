@@ -1,15 +1,23 @@
 {
-  "name": "easystate",
+  "name": "@sakura_fty/easystore",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc", 
-    "start": "node dist/store.js" 
+  "description": "A simple state management solution",
+  "main": "dist/store.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:q897586834/EasyState.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/store.js"
+  },
+  "keywords": [
+    "state",
+    "store",
+    "easy"
+  ],
+  "author": "sakura_fty",
+  "license": "MIT",
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.14",

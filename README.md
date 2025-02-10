@@ -1,2 +1,23 @@
-# easyState
-A simplified version of the lightweight state manager
+# @sakura_fty/easystore
+
+`@sakura_fty/easystore` 是一个轻量级的状态管理库，旨在简化 React 等前端框架中的状态管理，提供简单、可扩展且高效的 API。它不像 Redux 那样复杂，而是注重易用性和灵活性，非常适合中小型项目或希望减少状态管理复杂性的开发者。
+
+## 功能介绍
+
+- **简洁易用**：API 设计简单，支持同步和异步状态更新。
+- **内置持久化支持**：通过 `localStorage` 或 `sessionStorage` 持久化存储状态，避免数据丢失。
+- **支持白名单和黑名单机制**：可以选择性地持久化状态中的部分字段。
+- **监听状态变化**：支持订阅状态变化，提供高效的状态变更通知机制。
+- **支持异步操作**：通过 `setStateAsync` 支持异步更新状态，处理并发和异步逻辑。
+
+## 特性
+
+- **轻量级**：相较于 Redux，`EasyStore` 的 API 更简单，配置和学习成本低。
+- **灵活的存储选项**：支持 `localStorage` 和 `sessionStorage`，也可以自定义存储方式。
+- **深度冻结**：确保状态对象是不可变的，避免直接修改状态，增强数据一致性。
+- **函数式支持**：支持通过函数来更新状态，避免直接操作原始对象，减少错误。
+
+## 安装
+
+```bash
+npm install @sakura_fty/easystore
